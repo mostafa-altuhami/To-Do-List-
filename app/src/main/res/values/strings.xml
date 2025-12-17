@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">To Do List</string>
+    <string name="main_title_tasks">Tasks</string>
+    <string name="addtask_et_task">Please enter the task</string>
+    <string name="save">Save</string>
+    <string name="new_task">New Task</string>
+    <string name="newtask_btn_save">Save</string>
+    <string name="all_tasks_str">All Tasks</string>
+</resources>

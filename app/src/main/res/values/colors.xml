@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="holo_green_dark">#ff669900</color>
+    <color name="holo_blue_dark">#03183C</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">@color/holo_blue_dark</color>
+    <color name="colorAccent">#000000</color>
+    <color name="floating_btn">#344E7C</color>
+
+    <color name="achievement_bronze">#CD7F32</color>
+    <color name="achievement_silver">#C0C0C0</color>
+    <color name="achievement_gold">#FFD700</color>
+
+    <!-- Counter Background Colors -->
+    <color name="counter_bronze">#8B4513</color>
+    <color name="counter_silver">#708090</color>
+    <color name="counter_gold">#DAA520</color>
+    <color name="counter_default">#6C757D</color>
+
+    <!-- Primary Colors -->
+    <color name="primary_blue">#1976D2</color>
+    <color name="primary_blue_light">#42A5F5</color>
+    <color name="primary_blue_dark">#0D47A1</color>
+
+    <!-- Secondary Colors -->
+    <color name="accent_green">#4CAF50</color>
+    <color name="accent_green_light">#81C784</color>
+    <color name="accent_green_dark">#388E3C</color>
+
+    <!-- Background Colors -->
+    <color name="background_light">#F8F9FA</color>
+    <color name="background_card">#FFFFFF</color>
+    <color name="background_dark">#121212</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212529</color>
+    <color name="text_secondary">#6C757D</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="success">#28A745</color>
+    <color name="warning">#FFC107</color>
+    <color name="error">#DC3545</color>
+    <color name="info">#17A2B8</color>
+
+    <!-- Surface Colors -->
+    <color name="surface_1">#F1F3F4</color>
+    <color name="surface_2">#E8EAED</color>
+    <color name="surface_3">#DADCE0</color>
+
+    <!-- Shadow Colors -->
+    <color name="shadow_light">#1A000000</color>
+    <color name="shadow_medium">#33000000</color>
+
+    <!-- Transparent Colors -->
+    <color name="transparent">#00000000</color>
+    <color name="overlay">#80000000</color>
+</resources>
