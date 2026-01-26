@@ -21,12 +21,6 @@
             android:name=".ItemInfo"
            />
 
-        <receiver
-            android:name=".ResetCheckboxReciever"
-            android:enabled="true"
-            android:exported="false"
-         />
-
         <activity
             android:name=".SplashActivity"
             android:exported="true">
