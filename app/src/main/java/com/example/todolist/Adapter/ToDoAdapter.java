@@ -32,19 +32,13 @@ import java.util.concurrent.Executors;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClicked(ToDoModel item, int position);
-    }
-
     private List<ToDoModel> todoList;
-    private DatabaseHandler db;
-    private WeakReference<MainActivity> activityRef;
-    private Context context;
-    private ExecutorService executor;
-    private ConcurrentHashMap<Integer, Boolean> flagStates = new ConcurrentHashMap<>();
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
-
-    public ToDoAdapter() {}
+    private final DatabaseHandler db;
+    private final WeakReference<MainActivity> activityRef;
+    private final Context context;
+    private final ExecutorService executor;
+    private final ConcurrentHashMap<Integer, Boolean> flagStates = new ConcurrentHashMap<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public ToDoAdapter(DatabaseHandler db, MainActivity activity, List<ToDoModel> todoList) {
         this.db = db;
@@ -78,12 +72,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.task.setText(item.getTask());
 
         // Set checkbox change listener
-        holder.task.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            handleCheckboxChange(holder, item, isChecked);
-        });
+        holder.task.setOnCheckedChangeListener((buttonView, isChecked) ->
+                handleCheckboxChange(holder, item, isChecked));
 
         // Bind the item with this adapter instance
-        holder.bind(item, position, this);
+        holder.bind(item, this);
 
         boolean currentFlag = getFlagState(item.getId());
         int executionCount = item.getExecutionCounter();
@@ -112,6 +105,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                     }
                     int counterValue = db.getCounter(item.getId());
                     mainHandler.post(() -> holder.counter.setText(String.valueOf(counterValue)));
+
                 } catch (Exception e) {
                     // Revert on error
                     mainHandler.post(() -> {
@@ -119,9 +113,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                         holder.task.setOnCheckedChangeListener(null);
                         holder.task.setChecked(oldStatus == 1);
                         // Re-set the listener
-                        holder.task.setOnCheckedChangeListener((buttonView, isChecked2) -> {
-                            handleCheckboxChange(holder, item, isChecked2);
-                        });
+                        holder.task.setOnCheckedChangeListener((buttonView, isChecked2) ->
+                                handleCheckboxChange(holder, item, isChecked2));
                     });
                 }
             });
@@ -146,9 +139,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     }
 
     public void setTasks(List<ToDoModel> newTodoList) {
-        if (newTodoList == null) {
-
-        }
 
         if (todoList == null) {
             todoList = new ArrayList<>();
@@ -193,8 +183,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         itemBackup.setId(item.getId());
         itemBackup.setTask(item.getTask());
         itemBackup.setStatus(item.getStatus());
-        // Copy other fields if they exist:
-        // itemBackup.setExecutionCounter(item.getExecutionCounter());
 
         todoList.remove(position);
         notifyItemRemoved(position);
@@ -248,17 +236,17 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             if (executionCount >= 10) {
                 setupAchievement(counterView, achievementIcon,
                         R.drawable.counter_gold_background,
-                        android.R.drawable.btn_star_big_on,
+                        android.R.drawable.star_off,
                         R.color.achievement_gold);
             } else if (executionCount >= 5) {
                 setupAchievement(counterView, achievementIcon,
                         R.drawable.counter_silver_background,
-                        android.R.drawable.btn_star_big_on,
+                        android.R.drawable.star_on,
                         R.color.achievement_silver);
             } else if (executionCount >= 3) {
                 setupAchievement(counterView, achievementIcon,
                         R.drawable.counter_bronze_background,
-                        android.R.drawable.btn_star_big_on,
+                        android.R.drawable.star_big_on,
                         R.color.achievement_bronze);
             } else {
                 counterView.setBackgroundResource(R.drawable.counter_default_background);
@@ -291,24 +279,21 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
 
 
-        public void bind(final ToDoModel item, int position, ToDoAdapter adapter) {
+        public void bind(final ToDoModel item, ToDoAdapter adapter) {
             if (item == null) return;
 
 
-            iv_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Get current flag state for this item
-                    boolean currentFlag = adapter.getFlagState(item.getId());
-                    boolean newFlag = !currentFlag; // Toggle state
+            iv_btn.setOnClickListener(view -> {
+                // Get current flag state for this item
+                boolean currentFlag = adapter.getFlagState(item.getId());
+                boolean newFlag = !currentFlag; // Toggle state
 
-                    int counterOfTasks = adapter.getCounter(item.getId());
-                    // Save new state
-                    adapter.setFlagState(item.getId(), newFlag);
+                int counterOfTasks = adapter.getCounter(item.getId());
+                // Save new state
+                adapter.setFlagState(item.getId(), newFlag);
 
-                    adapter.handleItemClick(counter, imageView, counterOfTasks, newFlag);
+                adapter.handleItemClick(counter, imageView, counterOfTasks, newFlag);
 
-                }
             });
         }
 

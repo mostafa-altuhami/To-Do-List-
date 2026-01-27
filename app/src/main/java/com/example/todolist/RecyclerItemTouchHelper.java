@@ -1,7 +1,5 @@
 package com.example.todolist;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,7 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
-    private ToDoAdapter adapter;
+    private final ToDoAdapter adapter;
 
     public RecyclerItemTouchHelper(ToDoAdapter adapter) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);

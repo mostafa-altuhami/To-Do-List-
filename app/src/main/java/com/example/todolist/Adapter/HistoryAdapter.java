@@ -4,20 +4,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.todolist.MainActivity;
 import com.example.todolist.Model.ToDoModel;
 import com.example.todolist.R;
-import com.example.todolist.Utils.DatabaseHandler;
-
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private List<ToDoModel> todoList;
+    private final List<ToDoModel> todoList;
 
 
     public HistoryAdapter(List<ToDoModel> todoList) {
@@ -49,14 +44,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return todoList.size();
     }
 
-    class HistoryViewHolder extends RecyclerView.ViewHolder{
+    public static class HistoryViewHolder extends RecyclerView.ViewHolder{
 
         CheckBox task;
-        View v;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            v = itemView;
             task = itemView.findViewById(R.id.todoCheckBox);
         }
 

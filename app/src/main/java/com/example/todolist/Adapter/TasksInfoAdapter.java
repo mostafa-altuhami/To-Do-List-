@@ -16,7 +16,7 @@ import java.util.List;
 
 public class TasksInfoAdapter extends RecyclerView.Adapter<TasksInfoAdapter.TasksViewHolder> {
 
-    private List<ToDoModel> todoList;
+    private final List<ToDoModel> todoList;
 
     public TasksInfoAdapter(List<ToDoModel> todoList) {
         this.todoList = todoList;
@@ -46,10 +46,8 @@ public class TasksInfoAdapter extends RecyclerView.Adapter<TasksInfoAdapter.Task
 
         TextView tv_task, tv_count;
 
-        View v;
         public TasksViewHolder(@NonNull View itemView) {
             super(itemView);
-            v = itemView;
             tv_task = itemView.findViewById(R.id.taskName_tv);
             tv_count = itemView.findViewById(R.id.taskCount_tv);
         }
