@@ -1,29 +1,19 @@
 package com.example.todolist;
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.TextView;;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.Adapter.ToDoAdapter;
 import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DatabaseHandler;
+import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.imageview.ShapeableImageView;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,16 +22,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener{
 
-    private DatabaseHandler db;
+    private TaskRepository repository;
 
-    ImageView statistics_iv;
     private RecyclerView tasksRecyclerView;
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fab;
-    private BroadcastReceiver updateReceiver;
     private TextView taskText;
-    private String dayOfWeek, dayOfWeekForHistory;
-    SimpleDateFormat simpleDateFormat;
     private List<ToDoModel> taskList;
 
 
@@ -50,98 +36,96 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        statistics_iv = findViewById(R.id.statistics);
-
-        statistics_iv.setOnClickListener(view -> {
 
 
-            Intent intent = new Intent(MainActivity.this, ItemInfo.class);
-            startActivity(intent);
-        });
+        repository = new TaskRepository(this);
 
-        db = new DatabaseHandler(this);
-        db.openDatabase();
+
         taskText = findViewById(R.id.tasksText);
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        taskList = db.getAllTasks();
-        tasksAdapter = new ToDoAdapter(db, MainActivity.this, taskList);
+        fab = findViewById(R.id.fab);
+
+        taskList = repository.getAllTasks();
+
+        tasksAdapter = new ToDoAdapter(repository, MainActivity.this, taskList);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         tasksRecyclerView.setAdapter(tasksAdapter);
 
-        updateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                tasksAdapter.updateData(getData());
-            }
-        };
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(updateReceiver, new IntentFilter("UPDATE_RECYCLERVIEW"), Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(updateReceiver, new IntentFilter("UPDATE_RECYCLERVIEW"));
-        }
+
+
 
         DailyResetScheduler.scheduleDailyReset(this);
         ItemTouchHelper itemTouchHelper = new
                 ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
 
-        fab = findViewById(R.id.fab);
-
-
 
         tasksAdapter.setTasks(taskList);
-        simpleDateFormat = new SimpleDateFormat("EEEE");
 
-        Calendar calendar = Calendar.getInstance();
+        setupDateHeader();
+        setupClicks();
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        dayOfWeekForHistory = simpleDateFormat.format(calendar.getTime());
+    }
 
-        String dateHistory = dayOfWeekForHistory + ": " + day + "-" + (month + 1) + "-" + year;
-        taskText.setText(dateHistory);
+    @SuppressLint("SimpleDateFormat")
+    private void setupDateHeader() {
+       SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+       Calendar calendar = Calendar.getInstance();
 
+        String text = sdf.format(calendar.getTime()) + ": " +
+                calendar.get(Calendar.DAY_OF_MONTH) + "-" +
+                (calendar.get(Calendar.MONTH) + 1) + "-" +
+                calendar.get(Calendar.YEAR);
+
+        taskText.setText(text);
+    }
+
+    private void setupClicks () {
+
+        fab.setOnClickListener(v ->
+                AddNewTask.newInstance()
+                        .show(getSupportFragmentManager(), AddNewTask.TAG));
 
         taskText.setOnClickListener(view -> {
 
-            DatePickerDialog pickerDialog = new DatePickerDialog(MainActivity.this,
-                    R.style.DatePickerDialogTheme
-                    , (datePicker, i, i1, i2) -> {
-                        Calendar selectedDate = Calendar.getInstance();
-                        selectedDate.set(i, i1, i2, 0, 0, 0);
-                        Date date = selectedDate.getTime();
-                        List<ToDoModel> listOfUpdatedTasks = db.getAllTasksByDate(date);
-                        dayOfWeek = simpleDateFormat.format(selectedDate.getTime());
-                        String fullDateText = dayOfWeek + ": " + i2 + "-" + (i1 + 1) + "-" + i;
-                        Intent intent = new Intent(MainActivity.this, ShowHistory.class);
-                        intent.putExtra("text", String.valueOf(fullDateText));
-                        intent.putExtra("list", (Serializable) listOfUpdatedTasks);
+            Calendar now = Calendar.getInstance();
+
+            new DatePickerDialog(this,
+                    R.style.DatePickerDialogTheme,
+                    (v, year, month, day) -> {
+
+                        Calendar selected = Calendar.getInstance();
+                        selected.set(year, month, day, 0, 0, 0);
+
+                        Date date = selected.getTime();
+                        List<ToDoModel> history = repository.getAllTasksByDate(date);
+
+                        Intent intent = new Intent(this, ShowHistory.class);
+                        intent.putExtra("date", date.getTime());
+                        intent.putExtra("list", (Serializable) history);
                         startActivity(intent);
-                    },year, month, day);
-            pickerDialog.show();
+                    },
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+
+            ).show();
+
         });
-
-        fab.setOnClickListener(v -> AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG));
-    }
-
-    private List<ToDoModel> getData() {
-        return db.getAllTasks();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(updateReceiver);
         tasksAdapter.cleanup();
+        repository.close();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void handleDialogClose(DialogInterface dialog){
-        taskList = db.getAllTasks();
+        taskList = repository.getAllTasks();
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
     }

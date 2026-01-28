@@ -4,12 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 
-// Splash Screen Activity
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
@@ -19,9 +18,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        DailyResetManager.checkDailyReset(this);
 
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
-        new Handler().postDelayed(() -> {
+        new Handler(getMainLooper()).postDelayed(() -> {
             startActivity(i);
             finish();
         }, 150);

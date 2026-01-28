@@ -52,8 +52,7 @@ public class ShowHistory extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        String text = intent.getStringExtra("text");
-        Log.d("DEBUG", "Received text: " + text);
+        String text = intent.getStringExtra("date");
         List<ToDoModel> modelList = (List<ToDoModel>) intent.getSerializableExtra("list");
 
         textHistory = findViewById(R.id.history_task);

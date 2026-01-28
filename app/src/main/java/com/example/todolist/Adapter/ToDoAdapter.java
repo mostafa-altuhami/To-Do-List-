@@ -20,7 +20,7 @@ import com.example.todolist.AddNewTask;
 import com.example.todolist.MainActivity;
 import com.example.todolist.Model.ToDoModel;
 import com.example.todolist.R;
-import com.example.todolist.Utils.DatabaseHandler;
+import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.lang.ref.WeakReference;
@@ -33,20 +33,19 @@ import java.util.concurrent.Executors;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     private List<ToDoModel> todoList;
-    private final DatabaseHandler db;
+    private final TaskRepository repository;
     private final WeakReference<MainActivity> activityRef;
     private final Context context;
     private final ExecutorService executor;
     private final ConcurrentHashMap<Integer, Boolean> flagStates = new ConcurrentHashMap<>();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    public ToDoAdapter(DatabaseHandler db, MainActivity activity, List<ToDoModel> todoList) {
-        this.db = db;
+    public ToDoAdapter(TaskRepository repository, MainActivity activity, List<ToDoModel> todoList) {
+        this.repository = repository;
         this.activityRef = new WeakReference<>(activity);
-        this.context = activity;
-        this.todoList = todoList;
+        this.context = activity.getApplicationContext();
+        this.todoList = todoList != null ? todoList : new ArrayList<>();
         this.executor = Executors.newSingleThreadExecutor();
-        db.openDatabase();
     }
 
     @NonNull
@@ -97,14 +96,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 try {
 
                     if (isChecked) {
-                        db.incrementCounter(item.getId());
-                        db.updateStatus(item.getId(), 1);
+                        repository.incrementCounter(item.getId());
+                        repository.updateStatus(item.getId(), 1);
                     } else {
-                        db.decrementCounter(item.getId());
-                        db.updateStatus(item.getId(), 0);
+                        repository.decrementCounter(item.getId());
+                        repository.updateStatus(item.getId(), 0);
                     }
-                    int counterValue = db.getCounter(item.getId());
-                    mainHandler.post(() -> holder.counter.setText(String.valueOf(counterValue)));
+
+                    int counterValue = repository.getCounter(item.getId());
+                    item.setExecutionCounter(counterValue);
+                    mainHandler.post(() -> {
+                        holder.counter.setText(String.valueOf(counterValue));
+                        boolean currentFlag = getFlagState(item.getId());
+                        handleItemClick(holder.counter, holder.imageView, counterValue, currentFlag);
+                    });
 
                 } catch (Exception e) {
                     // Revert on error
@@ -178,19 +183,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
         ToDoModel item = todoList.get(position);
 
-        // Manual backup creation since no constructor available
+        // Manual backup creation
         ToDoModel itemBackup = new ToDoModel();
         itemBackup.setId(item.getId());
         itemBackup.setTask(item.getTask());
         itemBackup.setStatus(item.getStatus());
+        itemBackup.setExecutionCounter(item.getExecutionCounter());
 
         todoList.remove(position);
         notifyItemRemoved(position);
 
         executor.execute(() -> {
             try {
-                db.openDatabase();
-                db.deleteTask(item.getId());
+                repository.deleteTask(item.getId());
                 flagStates.remove(item.getId());
             } catch (Exception e) {
                 mainHandler.post(() -> {
@@ -236,7 +241,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             if (executionCount >= 10) {
                 setupAchievement(counterView, achievementIcon,
                         R.drawable.counter_gold_background,
-                        android.R.drawable.star_off,
+                        android.R.drawable.star_big_on,
                         R.color.achievement_gold);
             } else if (executionCount >= 5) {
                 setupAchievement(counterView, achievementIcon,
@@ -246,7 +251,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             } else if (executionCount >= 3) {
                 setupAchievement(counterView, achievementIcon,
                         R.drawable.counter_bronze_background,
-                        android.R.drawable.star_big_on,
+                        android.R.drawable.star_off,
                         R.color.achievement_bronze);
             } else {
                 counterView.setBackgroundResource(R.drawable.counter_default_background);
@@ -258,20 +263,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
     }
 
-    int getCounter (int id) {
-        return db.getCounter(id);
+    public MainActivity getActivity() {
+        return activityRef.get();
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox task;
         ShapeableImageView imageView;
         TextView counter;
-        View v;
         ImageButton iv_btn;
 
         ViewHolder(View view) {
             super(view);
-            v = view;
             task = view.findViewById(R.id.todoCheckBox);
             imageView = view.findViewById(R.id.achievement_icon);
             counter = view.findViewById(R.id.task_counter);
@@ -288,7 +292,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
                 boolean currentFlag = adapter.getFlagState(item.getId());
                 boolean newFlag = !currentFlag; // Toggle state
 
-                int counterOfTasks = adapter.getCounter(item.getId());
+                int counterOfTasks = item.getExecutionCounter();
                 // Save new state
                 adapter.setFlagState(item.getId(), newFlag);
 
@@ -297,10 +301,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             });
         }
 
-    }
-
-    public void updateData(List<ToDoModel> data) {
-        setTasks(data);
     }
 
     public void cleanup() {

@@ -33,7 +33,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
         final int position = viewHolder.getAdapterPosition();
         if (direction == ItemTouchHelper.LEFT) {
-            new MaterialAlertDialogBuilder(adapter.getContext(), R.style.AlertDialogTheme)
+            new MaterialAlertDialogBuilder(adapter.getActivity(), R.style.AlertDialogTheme)
                     .setTitle("Delete Task")
                     .setCancelable(false)
                     .setMessage("Are you sure you want to delete this Task?")

@@ -5,17 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_light">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/statistics"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/stastistics_background"
-        android:src="@drawable/baseline_bar_chart_24"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_alignTop="@id/tasksText"
-        app:tint="@color/white" />
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tasksText"
         android:layout_width="wrap_content"
