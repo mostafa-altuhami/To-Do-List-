@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DatabaseHandler;
+import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class AddNewTask extends BottomSheetDialogFragment {
@@ -25,7 +25,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
     private EditText newTaskText;
     private Button newTaskSaveButton;
 
-    private DatabaseHandler db;
+    private TaskRepository repository;
 
     public static AddNewTask newInstance(){
         return new AddNewTask();
@@ -66,8 +66,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         }
 
-        db = new DatabaseHandler(getActivity());
-        db.openDatabase();
+        repository= new TaskRepository(getActivity());
 
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,7 +75,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals("")){
+                if(s.toString().isEmpty()){
                     newTaskSaveButton.setEnabled(false);
                     newTaskSaveButton.setTextColor(Color.GRAY);
                 }
@@ -95,13 +94,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskSaveButton.setOnClickListener(v -> {
             String text = newTaskText.getText().toString();
             if(finalIsUpdate){
-                db.updateTask(bundle.getInt("id"), text);
+                repository.updateTask(bundle.getInt("id"), text);
             }
             else {
                 ToDoModel task = new ToDoModel();
                 task.setTask(text);
                 task.setStatus(0);
-                db.insertTask(task);
+                repository.insertTask(task);
             }
             dismiss();
         });

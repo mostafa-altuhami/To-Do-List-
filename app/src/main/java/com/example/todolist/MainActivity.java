@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+@SuppressLint("SimpleDateFormat")
 public class MainActivity extends AppCompatActivity implements DialogCloseListener{
 
     private TaskRepository repository;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private ToDoAdapter tasksAdapter;
     private FloatingActionButton fab;
     private TextView taskText;
+    SimpleDateFormat sdf;
     private List<ToDoModel> taskList;
 
 
@@ -35,11 +37,12 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
 
 
         repository = new TaskRepository(this);
-
+        sdf = new SimpleDateFormat("EEEE");
 
         taskText = findViewById(R.id.tasksText);
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
@@ -67,9 +70,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
     }
 
-    @SuppressLint("SimpleDateFormat")
     private void setupDateHeader() {
-       SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+
        Calendar calendar = Calendar.getInstance();
 
         String text = sdf.format(calendar.getTime()) + ": " +
@@ -100,9 +102,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                         Date date = selected.getTime();
                         List<ToDoModel> history = repository.getAllTasksByDate(date);
 
+                        String dateText = sdf.format(date) + ": " + selected.get(Calendar.DAY_OF_MONTH) + "-" +
+                                (selected.get(Calendar.MONTH) + 1) + "-" + selected.get(Calendar.YEAR);
+
+
                         Intent intent = new Intent(this, ShowHistory.class);
-                        intent.putExtra("date", date.getTime());
-                        intent.putExtra("list", (Serializable) history);
+                        intent.putExtra("header", dateText);
+                        intent.putExtra("date", date);
                         startActivity(intent);
                     },
                     now.get(Calendar.YEAR),

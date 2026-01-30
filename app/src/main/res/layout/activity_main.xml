@@ -38,6 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="32dp"
+        android:contentDescription="@string/new_task"
         app:backgroundTint="@color/accent_green"
         app:tint="@color/text_on_primary"
         android:src="@drawable/add"

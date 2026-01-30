@@ -46,6 +46,22 @@ public class TaskRepository {
         db.deleteTask(id);
     }
 
+    public void insertCopyOfTasks(List<ToDoModel> list) {
+        db.insertCopyOfTasks(list);
+    }
+
+    public void resetAllCheckboxes(Context context) {
+        db.resetAllCheckboxes(context);
+    }
+
+    public void insertTask(ToDoModel task) {
+        db.insertTask(task);
+    }
+
+    public void updateTask(int id, String task) {
+        db.updateTask(id, task);
+    }
+
     public void close() {
         db.close();
     }

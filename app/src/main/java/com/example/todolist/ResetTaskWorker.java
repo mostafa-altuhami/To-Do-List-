@@ -1,13 +1,13 @@
 package com.example.todolist;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DatabaseHandler;
+import com.example.todolist.repository.TaskRepository;
+
 import java.util.List;
 
 public class ResetTaskWorker extends Worker {
@@ -20,13 +20,20 @@ public class ResetTaskWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        list = db.getAllTasks();
-        db.resetAllCheckboxes(getApplicationContext());
-        db.insertCopyOfTasks(list);
-        db.close();
+        TaskRepository repository = new TaskRepository(getApplicationContext());
 
-        Log.d("RESET_TASKS", "finished");
-        return Result.success();
+        try {
+            list = repository.getAllTasks();
+            repository.resetAllCheckboxes(getApplicationContext());
+            repository.insertCopyOfTasks(list);
+            repository.close();
+            return Result.success();
+        } catch (Exception e) {
+            return Result.failure();
+        } finally {
+            repository.close();
+        }
+
+
     }
 }

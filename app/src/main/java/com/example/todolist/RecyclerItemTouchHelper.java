@@ -25,7 +25,8 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
 
     @Override
-    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+    public boolean onMove(@NonNull RecyclerView recyclerView,
+                          @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
         return false;
     }
 
@@ -40,7 +41,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                     .setPositiveButton("Confirm", (dialog, which) -> {
                         adapter.deleteItem(position);
                     })
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    .setNegativeButton("Cancel", (dialog, which) -> {
                         adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                     })
                     .show();
@@ -50,7 +51,10 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView,
+                            @NonNull RecyclerView.ViewHolder viewHolder, float dX,
+                            float dY, int actionState, boolean isCurrentlyActive) {
+
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
         Drawable icon;

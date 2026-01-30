@@ -1,23 +1,17 @@
 package com.example.todolist.Utils;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import androidx.annotation.Nullable;
-
 import com.example.todolist.Model.ToDoModel;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -29,6 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String STATUS = "status";
     private static final String COUNTER = "counter";
     private static final String DATE = "date";
+
     private static final String CREATE_TODO_TABLE = "CREATE TABLE " + TODO_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + TASK + " TEXT, "
             + STATUS + " INTEGER, " + COUNTER + " INTEGER, " + DATE + " INTEGER)";
 
@@ -170,7 +165,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int size = list.size();
         ToDoModel model;
         for (int i = 0 ;i < size; i++) {
-            model = new ToDoModel();
             model = list.get(i);
             long timestamp = System.currentTimeMillis() / 1000;
             ContentValues cv = new ContentValues();
