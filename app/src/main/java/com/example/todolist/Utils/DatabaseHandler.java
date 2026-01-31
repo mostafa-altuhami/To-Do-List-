@@ -61,6 +61,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TODO_TABLE, null, cv);
     }
 
+    public List<ToDoModel> getTodayTasks(long today) {
+
+        openDatabase();
+        List<ToDoModel> taskList = new ArrayList<>();
+
+        Cursor cur = db.query(
+                TODO_TABLE,
+                null,
+                DATE + " = ?",
+                new String[]{String.valueOf(today)},
+                null,
+                null,
+                null
+        );
+
+        if (cur.moveToFirst()) {
+            do {
+                ToDoModel task = new ToDoModel();
+                task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
+                task.setTask(cur.getString(cur.getColumnIndexOrThrow(TASK)));
+                task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
+                task.setExecutionCounter(cur.getInt(cur.getColumnIndexOrThrow(COUNTER)));
+                taskList.add(task);
+            } while (cur.moveToNext());
+        }
+
+        cur.close();
+        return taskList;
+    }
+
     public List<ToDoModel> getAllTasks(){
         openDatabase();
         HashSet <String> st = new HashSet<>();
@@ -68,7 +98,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cur = null;
         db.beginTransaction();
         try{
-            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(TODO_TABLE, null, null, null,
+                    null, null, null, null);
             if(cur != null){
                 if(cur.moveToFirst()){
                     do{
@@ -176,7 +207,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
     public List<ToDoModel> getAllTasksByDate(Date date){
-        openDatabase();
         List<ToDoModel> taskList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

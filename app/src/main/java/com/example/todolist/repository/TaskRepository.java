@@ -17,8 +17,9 @@ public class TaskRepository {
         db.openDatabase();
     }
 
-    public List<ToDoModel> getAllTasks() {
-        return db.getAllTasks();
+
+    public List<ToDoModel> getTodayTasks(long today) {
+        return db.getTodayTasks(today);
     }
 
 

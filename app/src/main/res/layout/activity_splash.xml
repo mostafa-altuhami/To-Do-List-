@@ -11,7 +11,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         app:tint="?attr/colorOnSurface"
-        android:src="@drawable/icon"
+        android:src="@drawable/icon_launcer_foreground"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent" />
 
 </com.google.android.material.card.MaterialCardView>

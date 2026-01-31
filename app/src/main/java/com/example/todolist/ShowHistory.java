@@ -34,7 +34,8 @@ public class ShowHistory extends AppCompatActivity {
 
         Intent intent = getIntent();
         String text = intent.getStringExtra("header");
-        Date date = (Date) intent.getSerializableExtra("date");
+        long time =  intent.getLongExtra("date", 0);
+        Date date = new Date(time);
         List<ToDoModel> modelList = repository.getAllTasksByDate(date);
 
         textHistory = findViewById(R.id.history_task);
@@ -47,5 +48,11 @@ public class ShowHistory extends AppCompatActivity {
         rv_History.setAdapter(adapter);
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        repository.close();
     }
 }

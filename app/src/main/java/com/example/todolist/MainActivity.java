@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.Adapter.ToDoAdapter;
 import com.example.todolist.Model.ToDoModel;
+import com.example.todolist.Utils.DateUtil;
 import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.Serializable;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     private TextView taskText;
     SimpleDateFormat sdf;
     private List<ToDoModel> taskList;
+    private long today;
+
 
 
     @Override
@@ -43,12 +46,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         repository = new TaskRepository(this);
         sdf = new SimpleDateFormat("EEEE");
+        today = System.currentTimeMillis();
 
         taskText = findViewById(R.id.tasksText);
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         fab = findViewById(R.id.fab);
 
-        taskList = repository.getAllTasks();
+        taskList = repository.getTodayTasks(DateUtil.normalizeDate(today));
 
         tasksAdapter = new ToDoAdapter(repository, MainActivity.this, taskList);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -57,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
 
 
-        DailyResetScheduler.scheduleDailyReset(this);
+
         ItemTouchHelper itemTouchHelper = new
                 ItemTouchHelper(new RecyclerItemTouchHelper(tasksAdapter));
         itemTouchHelper.attachToRecyclerView(tasksRecyclerView);
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
                         Intent intent = new Intent(this, ShowHistory.class);
                         intent.putExtra("header", dateText);
-                        intent.putExtra("date", date);
+                        intent.putExtra("date", date.getTime());
                         startActivity(intent);
                     },
                     now.get(Calendar.YEAR),
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void handleDialogClose(DialogInterface dialog){
-        taskList = repository.getAllTasks();
+        taskList = repository.getTodayTasks(today);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
     }
