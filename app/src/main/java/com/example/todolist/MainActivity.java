@@ -15,7 +15,6 @@ import com.example.todolist.Model.ToDoModel;
 import com.example.todolist.Utils.DateUtil;
 import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,13 +45,13 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         repository = new TaskRepository(this);
         sdf = new SimpleDateFormat("EEEE");
-        today = System.currentTimeMillis();
+        today = DateUtil.normalizeDate(System.currentTimeMillis());
 
         taskText = findViewById(R.id.tasksText);
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         fab = findViewById(R.id.fab);
 
-        taskList = repository.getTodayTasks(DateUtil.normalizeDate(today));
+        taskList = repository.getTodayTasks(today);
 
         tasksAdapter = new ToDoAdapter(repository, MainActivity.this, taskList);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));

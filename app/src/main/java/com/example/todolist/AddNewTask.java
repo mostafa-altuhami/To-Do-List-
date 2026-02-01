@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +102,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 task.setTask(text);
                 task.setStatus(0);
                 repository.insertTask(task);
+                Log.d("Database", "Task Inserted");
             }
             dismiss();
         });
@@ -117,5 +119,11 @@ public class AddNewTask extends BottomSheetDialogFragment {
         } catch (Exception ignored) {
 
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        repository.close();
     }
 }

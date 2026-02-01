@@ -51,7 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void insertTask(ToDoModel task){
-        long timestamp = System.currentTimeMillis() / 1000;
+        long timestamp = DateUtil.normalizeDate(System.currentTimeMillis()) / 1000;
 
         ContentValues cv = new ContentValues();
         cv.put(TASK, task.getTask());
@@ -66,11 +66,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         openDatabase();
         List<ToDoModel> taskList = new ArrayList<>();
 
+        long timeInSeconds = today / 1000;
+
         Cursor cur = db.query(
                 TODO_TABLE,
                 null,
                 DATE + " = ?",
-                new String[]{String.valueOf(today)},
+                new String[]{String.valueOf(timeInSeconds)},
                 null,
                 null,
                 null
