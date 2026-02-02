@@ -24,10 +24,7 @@ public class ResetTaskWorker extends Worker {
         TaskRepository repository = new TaskRepository(getApplicationContext());
 
         try {
-            list = repository.getTodayTasks(DateUtil.normalizeDate(System.currentTimeMillis()));
-            repository.resetAllCheckboxes(getApplicationContext());
-            repository.insertCopyOfTasks(list);
-            repository.close();
+           DailyResetManager.checkDailyReset(getApplicationContext());
             return Result.success();
         } catch (Exception e) {
             return Result.failure();

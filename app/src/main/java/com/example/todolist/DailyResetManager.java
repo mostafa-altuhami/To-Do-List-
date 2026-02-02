@@ -21,23 +21,32 @@ public class DailyResetManager {
     private static final String SHARED_PREFS_NAME = "shared_prefs";
     private static final String LAST_RESET_KEY = "last_reset";
 
-    public static boolean checkDailyReset(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
-        long lastReset = sharedPreferences.getLong(LAST_RESET_KEY, 0);
+    public static void checkDailyReset(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
 
-        if (!DateUtils.isToday(lastReset)) {
-            TaskRepository repository = new TaskRepository(context);
-            List<ToDoModel> list = repository.getTodayTasks(DateUtil.normalizeDate(System.currentTimeMillis()));
-            repository.resetAllCheckboxes(context);
-            repository.insertCopyOfTasks(list);
-            sharedPreferences.edit()
-                    .putLong(LAST_RESET_KEY, System.currentTimeMillis())
-                    .apply();
-            repository.close();
-            return true;
+        long lastReset = prefs.getLong(LAST_RESET_KEY, 0);
 
+        if (DateUtils.isToday(lastReset)) {
+            return;
         }
 
-        return false;
+        TaskRepository repository = new TaskRepository(context);
+
+        List<ToDoModel> todayTasks =
+                repository.getTodayTasks(
+                        DateUtil.normalizeDate(System.currentTimeMillis())
+                );
+
+        repository.resetAllCheckboxes(context);
+        repository.insertCopyOfTasks(todayTasks);
+        repository.close();
+
+        // save reset time
+        prefs.edit()
+                .putLong(LAST_RESET_KEY, System.currentTimeMillis())
+                .apply();
+
     }
 }
+

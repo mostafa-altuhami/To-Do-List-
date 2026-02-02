@@ -18,10 +18,11 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        boolean tasksEdited = DailyResetManager.checkDailyReset(this);
-        if (!tasksEdited) {
-            DailyResetScheduler.scheduleDailyReset(this);
-        }
+
+        DailyResetManager.checkDailyReset(this);
+
+        DailyResetScheduler.scheduleDailyReset(this);
+
 
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
         new Handler(getMainLooper()).postDelayed(() -> {

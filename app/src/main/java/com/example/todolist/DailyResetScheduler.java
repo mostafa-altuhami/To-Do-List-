@@ -29,7 +29,7 @@ public class DailyResetScheduler {
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 "delay_reset_work",
-                ExistingPeriodicWorkPolicy.UPDATE,
+                ExistingPeriodicWorkPolicy.KEEP,
                 request
         );
 
