@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.Adapter.ToDoAdapter;
 import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DateUtil;
 import com.example.todolist.repository.TaskRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         repository = new TaskRepository(this);
         sdf = new SimpleDateFormat("EEEE");
-        today = DateUtil.normalizeDate(System.currentTimeMillis());
+        today = System.currentTimeMillis();
 
         taskText = findViewById(R.id.tasksText);
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
@@ -103,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
                         selected.set(year, month, day, 0, 0, 0);
 
                         Date date = selected.getTime();
-                        List<ToDoModel> history = repository.getAllTasksByDate(date);
 
                         String dateText = sdf.format(date) + ": " + selected.get(Calendar.DAY_OF_MONTH) + "-" +
                                 (selected.get(Calendar.MONTH) + 1) + "-" + selected.get(Calendar.YEAR);

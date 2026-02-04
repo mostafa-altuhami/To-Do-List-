@@ -5,12 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 import com.example.todolist.Model.ToDoModel;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -51,7 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void insertTask(ToDoModel task){
-        long timestamp = DateUtil.normalizeDate(System.currentTimeMillis()) / 1000;
+        long timestamp = DateUtil.normalizeDate(System.currentTimeMillis());
 
         ContentValues cv = new ContentValues();
         cv.put(TASK, task.getTask());
@@ -66,7 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         openDatabase();
         List<ToDoModel> taskList = new ArrayList<>();
 
-        long timeInSeconds = today / 1000;
+        long timeInSeconds = DateUtil.normalizeDate(today);
 
         Cursor cur = db.query(
                 TODO_TABLE,
@@ -90,41 +86,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         cur.close();
-        return taskList;
-    }
-
-    public List<ToDoModel> getAllTasks(){
-        openDatabase();
-        HashSet <String> st = new HashSet<>();
-        List<ToDoModel> taskList = new ArrayList<>();
-        Cursor cur = null;
-        db.beginTransaction();
-        try{
-            cur = db.query(TODO_TABLE, null, null, null,
-                    null, null, null, null);
-            if(cur != null){
-                if(cur.moveToFirst()){
-                    do{
-                        ToDoModel task = new ToDoModel();
-                            task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
-                            task.setTask(cur.getString(cur.getColumnIndexOrThrow(TASK)));
-                            task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
-                            task.setExecutionCounter(cur.getInt(cur.getColumnIndexOrThrow(COUNTER)));
-
-                            if (!st.contains(task.getTask())) {
-                                st.add(task.getTask());
-                                taskList.add(task);
-                            }
-
-                    } while(cur.moveToNext());
-                }
-            }
-        }
-        finally {
-            db.endTransaction();
-            assert cur != null;
-            cur.close();
-        }
         return taskList;
     }
 
@@ -181,25 +142,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.delete(TODO_TABLE, ID + "= ?", new String[] {String.valueOf(id)});
     }
 
-    public void resetAllCheckboxes(Context context) {
-        try {
-            openDatabase();
-            ContentValues values = new ContentValues();
-            values.put(STATUS, 0);
-            db.update(TODO_TABLE, values, null, null);
-            //Log.d("Database", "all checkboxes reset");
-        } catch (Exception e) {
-            Log.d("Database", "error resetting checkboxes " + e.getMessage());
-        }
-
-    }
 
     public void insertCopyOfTasks(List<ToDoModel> list) {
         int size = list.size();
         ToDoModel model;
         for (int i = 0 ;i < size; i++) {
             model = list.get(i);
-            long timestamp = System.currentTimeMillis() / 1000;
+            long timestamp = DateUtil.normalizeDate(System.currentTimeMillis());
             ContentValues cv = new ContentValues();
             cv.put(TASK, model.getTask());
             cv.put(STATUS, 0);
@@ -208,44 +157,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.insert(TODO_TABLE, null, cv);
         }
     }
-    public List<ToDoModel> getAllTasksByDate(Date date){
+    public List<ToDoModel> getTasksByDate(long date){
         List<ToDoModel> taskList = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        long startOfDay = calendar.getTimeInMillis() / 1000;
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        long endOfDay = calendar.getTimeInMillis() / 1000;
 
-        Cursor cur = null;
-        db.beginTransaction();
-        try{
-            cur = db.query(TODO_TABLE, null, DATE + ">=? AND " + DATE + "<?",
-                    new String[]{String.valueOf(startOfDay), String.valueOf(endOfDay)}, null, null, null);
-            if(cur != null){
-                if(cur.moveToFirst()){
-                    do{
-                        ToDoModel task = new ToDoModel();
-                        task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
-                        task.setTask(cur.getString(cur.getColumnIndexOrThrow(TASK)));
-                        task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
-                        task.setExecutionCounter(cur.getInt(cur.getColumnIndexOrThrow(COUNTER)));
-                        long timestamp = cur.getLong(cur.getColumnIndexOrThrow(DATE));
-                        Date taskDate = new Date(timestamp * 1000);
-                        task.setDate(taskDate);
-                        taskList.add(task);
-                    }
-                    while(cur.moveToNext());
-                }
-            }
+        Cursor cur = db.query(
+                TODO_TABLE,
+                null,
+                DATE + " = ?",
+                new String[]{String.valueOf(date)},
+                null,
+                null,
+                null
+        );
+
+        if (cur.moveToFirst()) {
+            do {
+                ToDoModel task = new ToDoModel();
+                task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
+                task.setTask(cur.getString(cur.getColumnIndexOrThrow(TASK)));
+                task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
+                task.setExecutionCounter(cur.getInt(cur.getColumnIndexOrThrow(COUNTER)));
+                taskList.add(task);
+            } while (cur.moveToNext());
         }
-        finally {
-            db.endTransaction();
-            assert cur != null;
-            cur.close();
-        }
+
+        cur.close();
         return taskList;
     }
 

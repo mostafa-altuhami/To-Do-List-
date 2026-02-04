@@ -21,15 +21,12 @@ public class ResetTaskWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        TaskRepository repository = new TaskRepository(getApplicationContext());
 
         try {
            DailyResetManager.checkDailyReset(getApplicationContext());
             return Result.success();
         } catch (Exception e) {
             return Result.failure();
-        } finally {
-            repository.close();
         }
 
 

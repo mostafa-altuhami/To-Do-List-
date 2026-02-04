@@ -3,6 +3,7 @@ package com.example.todolist;
 import android.content.Context;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -21,17 +22,18 @@ public class DailyResetScheduler {
         ).setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
                 .build();
 
-//        OneTimeWorkRequest test = new OneTimeWorkRequest.Builder(
-//                ResetTaskWorker.class)
-//                .setInitialDelay(10, TimeUnit.SECONDS)
-//                        .build();
+        OneTimeWorkRequest test = new OneTimeWorkRequest.Builder(
+                ResetTaskWorker.class)
+                .setInitialDelay(10, TimeUnit.SECONDS)
+                        .build();
 
+        WorkManager.getInstance(context).enqueue(test);
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                "delay_reset_work",
-                ExistingPeriodicWorkPolicy.KEEP,
-                request
-        );
+//        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+//                "delay_reset_work",
+//                ExistingPeriodicWorkPolicy.KEEP,
+//                request
+//        );
 
 
     }

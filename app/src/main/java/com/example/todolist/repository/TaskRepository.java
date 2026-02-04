@@ -23,8 +23,8 @@ public class TaskRepository {
     }
 
 
-    public List<ToDoModel> getAllTasksByDate(Date date) {
-        return db.getAllTasksByDate(date);
+    public List<ToDoModel> getTasksByDate(long date) {
+        return db.getTasksByDate(date);
     }
 
     public void incrementCounter(int id) {

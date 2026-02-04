@@ -25,26 +25,28 @@ public class DailyResetManager {
         SharedPreferences prefs =
                 context.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
 
+        long today = DateUtil.normalizeDate(System.currentTimeMillis());
         long lastReset = prefs.getLong(LAST_RESET_KEY, 0);
+
 
         if (DateUtils.isToday(lastReset)) {
             return;
         }
 
+        long yesterday = today - DateUtils.DAY_IN_MILLIS;
+
+
         TaskRepository repository = new TaskRepository(context);
 
-        List<ToDoModel> todayTasks =
-                repository.getTodayTasks(
-                        DateUtil.normalizeDate(System.currentTimeMillis())
-                );
+        List<ToDoModel> yesterdayTasks =
+                repository.getTodayTasks(yesterday);
 
-        repository.resetAllCheckboxes(context);
-        repository.insertCopyOfTasks(todayTasks);
+        repository.insertCopyOfTasks(yesterdayTasks);
         repository.close();
 
         // save reset time
         prefs.edit()
-                .putLong(LAST_RESET_KEY, System.currentTimeMillis())
+                .putLong(LAST_RESET_KEY, today)
                 .apply();
 
     }

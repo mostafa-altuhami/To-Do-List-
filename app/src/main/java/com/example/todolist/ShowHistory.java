@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.todolist.Adapter.HistoryAdapter;
 import com.example.todolist.Model.ToDoModel;
+import com.example.todolist.Utils.DateUtil;
 import com.example.todolist.repository.TaskRepository;
 
 import java.util.Date;
@@ -35,8 +36,7 @@ public class ShowHistory extends AppCompatActivity {
         Intent intent = getIntent();
         String text = intent.getStringExtra("header");
         long time =  intent.getLongExtra("date", 0);
-        Date date = new Date(time);
-        List<ToDoModel> modelList = repository.getAllTasksByDate(date);
+        List<ToDoModel> modelList = repository.getTasksByDate(DateUtil.normalizeDate(time));
 
         textHistory = findViewById(R.id.history_task);
         rv_History = findViewById(R.id.rv_history);
