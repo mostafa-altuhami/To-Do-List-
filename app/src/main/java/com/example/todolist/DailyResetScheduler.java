@@ -22,18 +22,18 @@ public class DailyResetScheduler {
         ).setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
                 .build();
 
-        OneTimeWorkRequest test = new OneTimeWorkRequest.Builder(
-                ResetTaskWorker.class)
-                .setInitialDelay(10, TimeUnit.SECONDS)
-                        .build();
+//        OneTimeWorkRequest test = new OneTimeWorkRequest.Builder(
+//                ResetTaskWorker.class)
+//                .setInitialDelay(10, TimeUnit.SECONDS)
+//                        .build();
+//
+//        WorkManager.getInstance(context).enqueue(test);
 
-        WorkManager.getInstance(context).enqueue(test);
-
-//        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-//                "delay_reset_work",
-//                ExistingPeriodicWorkPolicy.KEEP,
-//                request
-//        );
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                "delay_reset_work",
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+        );
 
 
     }

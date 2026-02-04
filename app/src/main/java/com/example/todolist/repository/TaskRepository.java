@@ -51,10 +51,6 @@ public class TaskRepository {
         db.insertCopyOfTasks(list);
     }
 
-    public void resetAllCheckboxes(Context context) {
-        db.resetAllCheckboxes(context);
-    }
-
     public void insertTask(ToDoModel task) {
         db.insertTask(task);
     }
