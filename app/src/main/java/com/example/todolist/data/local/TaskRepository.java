@@ -1,11 +1,9 @@
-package com.example.todolist.repository;
+package com.example.todolist.data.local;
 
 import android.content.Context;
 
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DatabaseHandler;
+import com.example.todolist.data.model.ToDoModel;
 
-import java.util.Date;
 import java.util.List;
 
 public class TaskRepository {

@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.ui.home;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.todolist.Adapter.ToDoAdapter;
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.repository.TaskRepository;
+
+import com.example.todolist.ui.common.DialogCloseListener;
+import com.example.todolist.R;
+import com.example.todolist.ui.history.ShowHistory;
+import com.example.todolist.data.model.ToDoModel;
+import com.example.todolist.data.local.TaskRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressLint("SimpleDateFormat")
-public class MainActivity extends AppCompatActivity implements DialogCloseListener{
+public class MainActivity extends AppCompatActivity implements DialogCloseListener {
 
     private TaskRepository repository;
 

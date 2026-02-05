@@ -1,4 +1,4 @@
-package com.example.todolist.Utils;
+package com.example.todolist.core.util;
 
 import java.util.Calendar;
 

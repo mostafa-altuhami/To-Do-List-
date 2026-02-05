@@ -1,4 +1,4 @@
-package com.example.todolist.Model;
+package com.example.todolist.data.model;
 
 
 import java.io.Serializable;

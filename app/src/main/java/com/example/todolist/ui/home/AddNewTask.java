@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.ui.home;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -16,8 +16,11 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.repository.TaskRepository;
+
+import com.example.todolist.ui.common.DialogCloseListener;
+import com.example.todolist.R;
+import com.example.todolist.data.model.ToDoModel;
+import com.example.todolist.data.local.TaskRepository;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class AddNewTask extends BottomSheetDialogFragment {
@@ -102,7 +105,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 task.setTask(text);
                 task.setStatus(0);
                 repository.insertTask(task);
-                Log.d("Database", "Task Inserted");
+                    Log.d("Database", "Task Inserted");
             }
             dismiss();
         });

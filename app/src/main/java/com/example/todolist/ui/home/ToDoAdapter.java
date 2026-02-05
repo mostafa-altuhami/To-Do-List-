@@ -1,4 +1,4 @@
-package com.example.todolist.Adapter;
+package com.example.todolist.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,11 +16,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todolist.AddNewTask;
-import com.example.todolist.MainActivity;
-import com.example.todolist.Model.ToDoModel;
+import com.example.todolist.data.model.ToDoModel;
 import com.example.todolist.R;
-import com.example.todolist.repository.TaskRepository;
+import com.example.todolist.data.local.TaskRepository;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.lang.ref.WeakReference;

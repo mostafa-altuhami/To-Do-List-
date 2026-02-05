@@ -1,11 +1,12 @@
-package com.example.todolist;
+package com.example.todolist.core.manager;
 
 import android.content.Context;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+
+import com.example.todolist.core.worker.ResetTaskWorker;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;

@@ -1,4 +1,4 @@
-package com.example.todolist.Adapter;
+package com.example.todolist.ui.history;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.todolist.Model.ToDoModel;
+import com.example.todolist.data.model.ToDoModel;
 import com.example.todolist.R;
 import java.util.List;
 

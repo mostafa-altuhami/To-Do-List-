@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.ui.home;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todolist.Adapter.ToDoAdapter;
+import com.example.todolist.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {

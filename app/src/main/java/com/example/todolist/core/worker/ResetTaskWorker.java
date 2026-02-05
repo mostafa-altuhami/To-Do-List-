@@ -1,13 +1,13 @@
-package com.example.todolist;
+package com.example.todolist.core.worker;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DateUtil;
-import com.example.todolist.repository.TaskRepository;
+
+import com.example.todolist.core.manager.DailyResetManager;
+import com.example.todolist.data.model.ToDoModel;
 
 import java.util.List;
 

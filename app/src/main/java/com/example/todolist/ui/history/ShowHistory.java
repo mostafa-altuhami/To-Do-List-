@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.ui.history;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.todolist.Adapter.HistoryAdapter;
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.Utils.DateUtil;
-import com.example.todolist.repository.TaskRepository;
 
-import java.util.Date;
+import com.example.todolist.R;
+import com.example.todolist.data.model.ToDoModel;
+import com.example.todolist.core.util.DateUtil;
+import com.example.todolist.data.local.TaskRepository;
+
 import java.util.List;
 
 public class ShowHistory extends AppCompatActivity {

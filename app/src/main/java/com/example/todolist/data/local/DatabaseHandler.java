@@ -1,11 +1,13 @@
-package com.example.todolist.Utils;
+package com.example.todolist.data.local;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.todolist.Model.ToDoModel;
+import com.example.todolist.data.model.ToDoModel;
+import com.example.todolist.core.util.DateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 

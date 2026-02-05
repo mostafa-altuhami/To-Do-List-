@@ -1,14 +1,14 @@
-package com.example.todolist;
+package com.example.todolist.core.manager;
 
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.DateUtils;
-import com.example.todolist.Utils.DateUtil;
+import com.example.todolist.core.util.DateUtil;
 
-import com.example.todolist.Model.ToDoModel;
-import com.example.todolist.repository.TaskRepository;
+import com.example.todolist.data.model.ToDoModel;
+import com.example.todolist.data.local.TaskRepository;
 
 import java.util.List;
 
