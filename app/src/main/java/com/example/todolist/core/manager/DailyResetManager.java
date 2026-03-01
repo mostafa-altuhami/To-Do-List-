@@ -4,13 +4,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.format.DateUtils;
 import com.example.todolist.core.util.DateUtil;
 
 import com.example.todolist.data.model.ToDoModel;
 import com.example.todolist.data.local.TaskRepository;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Ensures tasks are reset once per day.
@@ -29,19 +29,23 @@ public class DailyResetManager {
         long lastReset = prefs.getLong(LAST_RESET_KEY, 0);
 
 
-        if (DateUtils.isToday(lastReset)) {
-            return;
+        if (lastReset == 0) {
+            prefs.edit().putLong(LAST_RESET_KEY, today).apply();
+            return; // first time (no reset)
         }
 
-        long yesterday = today - DateUtils.DAY_IN_MILLIS;
+        int dayMissed = DateUtil.daysBetween(lastReset, today);
 
+        if (dayMissed <= 0) return;
 
         TaskRepository repository = new TaskRepository(context);
 
-        List<ToDoModel> yesterdayTasks =
-                repository.getTodayTasks(yesterday);
+        for (int i = 1; i <= dayMissed; i++) {
+            long targetDay = lastReset + TimeUnit.DAYS.toMillis(i);
 
-        repository.insertCopyOfTasks(yesterdayTasks);
+            List<ToDoModel> tasks = repository.getTasksByDate(DateUtil.normalizeDate(targetDay));
+            repository.insertCopyOfTasks(tasks);
+        }
         repository.close();
 
         // save reset time

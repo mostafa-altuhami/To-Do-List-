@@ -1,6 +1,7 @@
 package com.example.todolist.core.util;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 
@@ -12,5 +13,10 @@ public class DateUtil {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTimeInMillis();
+    }
+
+    public static int daysBetween(long start, long end) {
+        long diff = normalizeDate(end) - normalizeDate(start);
+        return (int) TimeUnit.MILLISECONDS.toDays(diff);
     }
 }

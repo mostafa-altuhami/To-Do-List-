@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.todolist.R;
 import com.example.todolist.core.manager.DailyResetManager;
-import com.example.todolist.core.manager.DailyResetScheduler;
 import com.example.todolist.ui.home.MainActivity;
 
 import java.util.Objects;
@@ -26,8 +25,6 @@ public class SplashActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         DailyResetManager.checkDailyReset(this);
-
-        DailyResetScheduler.scheduleDailyReset(this);
 
 
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
