@@ -45,8 +45,8 @@ public class TaskRepository {
         db.deleteTask(id);
     }
 
-    public void insertCopyOfTasks(List<ToDoModel> list) {
-        db.insertCopyOfTasks(list);
+    public void insertCopyOfTasks(List<ToDoModel> list, long targetDate) {
+        db.insertCopyOfTasks(list, targetDate);
     }
 
     public void insertTask(ToDoModel task) {

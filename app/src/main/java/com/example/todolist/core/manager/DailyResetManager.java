@@ -12,10 +12,7 @@ import com.example.todolist.data.local.TaskRepository;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Ensures tasks are reset once per day.
- * Reset occurs when the app is opened for the first time on a new day.
- */
+
 public class DailyResetManager {
 
     private static final String SHARED_PREFS_NAME = "shared_prefs";
@@ -40,11 +37,13 @@ public class DailyResetManager {
 
         TaskRepository repository = new TaskRepository(context);
 
+        long currentDate = lastReset;
         for (int i = 1; i <= dayMissed; i++) {
-            long targetDay = lastReset + TimeUnit.DAYS.toMillis(i);
+            currentDate += TimeUnit.DAYS.toMillis(1);
 
-            List<ToDoModel> tasks = repository.getTasksByDate(DateUtil.normalizeDate(targetDay));
-            repository.insertCopyOfTasks(tasks);
+            List<ToDoModel> tasks =
+                    repository.getTasksByDate(DateUtil.normalizeDate(currentDate - TimeUnit.DAYS.toMillis(1)));
+            repository.insertCopyOfTasks(tasks, currentDate);
         }
         repository.close();
 

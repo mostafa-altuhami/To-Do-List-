@@ -145,17 +145,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public void insertCopyOfTasks(List<ToDoModel> list) {
+    public void insertCopyOfTasks(List<ToDoModel> list, long targetDate) {
         int size = list.size();
         ToDoModel model;
         for (int i = 0 ;i < size; i++) {
             model = list.get(i);
-            long timestamp = DateUtil.normalizeDate(System.currentTimeMillis());
             ContentValues cv = new ContentValues();
             cv.put(TASK, model.getTask());
             cv.put(STATUS, 0);
             cv.put(COUNTER , model.getExecutionCounter());
-            cv.put(DATE, timestamp);
+            cv.put(DATE, DateUtil.normalizeDate(targetDate));
             db.insert(TODO_TABLE, null, cv);
         }
     }
